@@ -1,0 +1,6 @@
+{
+  "error_code": "REXX007",
+  "error_name": "Stack Overflow",
+  "cause": "Excessive recursion or too many nested subroutine calls",
+  "solution": "Reduce recursion depth or rewrite logic using iterative DO loops"
+}

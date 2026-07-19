@@ -1,0 +1,6 @@
+{
+  "error_code": "REXX004",
+  "error_name": "Invalid DO Loop",
+  "cause": "DO loop missing END statement or incorrect syntax",
+  "solution": "Ensure every DO loop has a matching END statement"
+}

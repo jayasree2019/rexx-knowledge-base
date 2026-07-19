@@ -1,0 +1,6 @@
+{
+  "error_code": "REXX005",
+  "error_name": "Variable Not Initialized",
+  "cause": "Variable used before being assigned a value",
+  "solution": "Initialize the variable before using it in expressions"
+}

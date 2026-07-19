@@ -1,0 +1,6 @@
+{
+  "error_code": "REXX008",
+  "error_name": "Invalid Stem Variable",
+  "cause": "Stem variable used with incorrect syntax or invalid index",
+  "solution": "Ensure stem variable is referenced as STEM.index with a valid numeric or string index"
+}

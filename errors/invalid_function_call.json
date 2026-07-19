@@ -1,0 +1,6 @@
+{
+  "error_code": "REXX006",
+  "error_name": "Invalid Function Call",
+  "cause": "Function name is misspelled or function does not exist",
+  "solution": "Check the function name and ensure it is a valid built-in or user-defined REXX function"
+}
