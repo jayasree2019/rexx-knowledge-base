@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>REXX Knowledge Base</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, "Segoe UI", system-ui, sans-serif; background: #f0f2f5; color: #1f2328; min-height: 100vh; }
+
+  /* ── Header ── */
+  .header { background: #1f2328; color: #fff; padding: 32px 24px 26px; text-align: center; }
+  .header h1 { font-size: 28px; font-weight: 800; letter-spacing: -0.5px; }
+  .header p { color: #8b949e; font-size: 14px; margin-top: 6px; }
+  .header-badges { display: flex; gap: 8px; justify-content: center; margin-top: 12px; flex-wrap: wrap; }
+  .badge { display: inline-block; font-size: 11px; font-weight: 700; padding: 3px 11px; border-radius: 12px; }
+  .badge-blue  { background: #3b82d4; color: #fff; }
+  .badge-green { background: #16a34a; color: #fff; }
+  .badge-gray  { background: #4b5563; color: #fff; }
+
+  /* ── Stats ── */
+  .stats { max-width: 820px; margin: 24px auto 0; padding: 0 20px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .stat { background: #fff; border: 1px solid #e5e7eb; border-radius: 10px; padding: 14px; text-align: center; }
+  .stat-number { font-size: 22px; font-weight: 800; color: #3b82d4; }
+  .stat-label  { font-size: 11px; color: #57606a; margin-top: 3px; }
+
+  /* ── Tabs ── */
+  .tabs { max-width: 820px; margin: 20px auto 0; padding: 0 20px; display: flex; gap: 8px; border-bottom: 2px solid #e5e7eb; }
+  .tab { padding: 10px 20px; font-size: 14px; font-weight: 600; cursor: pointer; color: #57606a; border-bottom: 3px solid transparent; margin-bottom: -2px; transition: all 0.15s; }
+  .tab:hover { color: #1f2328; }
+  .tab.active { color: #3b82d4; border-bottom-color: #3b82d4; }
+
+  /* ── Panels ── */
+  .panel { max-width: 820px; margin: 20px auto 40px; padding: 0 20px; display: none; }
+  .panel.active { display: block; }
+
+  /* ── Search ── */
+  .search-wrap { position: relative; margin-bottom: 8px; }
+  .search-wrap input { width: 100%; padding: 13px 16px 13px 46px; border: 2px solid #e5e7eb; border-radius: 10px; font-size: 15px; outline: none; background: #fff; transition: border-color 0.15s; }
+  .search-wrap input:focus { border-color: #3b82d4; }
+  .search-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); font-size: 17px; pointer-events: none; }
+  .filter-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+  .filter-btn { padding: 5px 14px; border-radius: 20px; border: 1px solid #e5e7eb; background: #fff; font-size: 12px; font-weight: 600; cursor: pointer; color: #57606a; transition: all 0.15s; }
+  .filter-btn:hover, .filter-btn.active { background: #1f2328; color: #fff; border-color: #1f2328; }
+  .result-count { font-size: 12px; color: #57606a; margin-bottom: 14px; }
+
+  /* ── Error Card ── */
+  .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 10px; overflow: hidden; margin-bottom: 12px; transition: box-shadow 0.15s; }
+  .card:hover { box-shadow: 0 3px 14px rgba(0,0,0,0.08); }
+  .card-header { display: flex; align-items: center; gap: 12px; padding: 14px 18px; border-bottom: 1px solid #f0f0f0; cursor: pointer; user-select: none; }
+  .error-code { background: #1f2328; color: #fff; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 6px; font-family: monospace; white-space: nowrap; }
+  .error-name { font-size: 15px; font-weight: 700; flex: 1; }
+  .toggle-icon { color: #57606a; font-size: 13px; transition: transform 0.2s; }
+  .card.collapsed .toggle-icon { transform: rotate(-90deg); }
+  .card-body { padding: 14px 18px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .card.collapsed .card-body { display: none; }
+
+  .section-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 5px; }
+  .cause-box    { background: #fff8f0; border: 1px solid #fde68a; border-radius: 7px; padding: 10px 12px; }
+  .cause-box .section-label { color: #d97706; }
+  .cause-box .text { font-size: 13px; color: #92400e; line-height: 1.5; }
+  .solution-box { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 7px; padding: 10px 12px; }
+  .solution-box .section-label { color: #16a34a; }
+  .solution-box .text { font-size: 13px; color: #166534; line-height: 1.5; font-family: monospace; word-break: break-word; }
+  .no-results { text-align: center; padding: 40px; color: #57606a; background: #fff; border: 1px solid #e5e7eb; border-radius: 10px; }
+
+  /* ── Add Form ── */
+  .form-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 10px; padding: 24px; margin-bottom: 16px; }
+  .form-card h2 { font-size: 16px; font-weight: 700; margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px solid #f0f0f0; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .form-row { margin-bottom: 16px; }
+  .form-row label { display: block; font-size: 12px; font-weight: 700; color: #57606a; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 6px; }
+  .form-row input, .form-row textarea, .form-row select {
+    width: 100%; padding: 10px 12px; border: 2px solid #e5e7eb; border-radius: 8px;
+    font-size: 14px; font-family: inherit; color: #1f2328; outline: none;
+    transition: border-color 0.15s; background: #fff;
+  }
+  .form-row input:focus, .form-row textarea:focus, .form-row select:focus { border-color: #3b82d4; }
+  .form-row textarea { min-height: 72px; resize: vertical; }
+  .hint { font-size: 11px; color: #57606a; margin-top: 4px; }
+  .validation-error { color: #cf222e; font-size: 12px; margin-top: 4px; display: none; }
+  input.invalid, textarea.invalid { border-color: #cf222e !important; }
+
+  .btn-primary { width: 100%; padding: 13px; background: #3b82d4; color: #fff; border: none; border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer; transition: background 0.15s; }
+  .btn-primary:hover { background: #2563eb; }
+
+  /* ── Output ── */
+  .output-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 10px; padding: 20px; display: none; }
+  .output-card h3 { font-size: 15px; font-weight: 700; margin-bottom: 14px; color: #16a34a; }
+  .output-steps { margin-bottom: 16px; counter-reset: steps; }
+  .step { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 8px; font-size: 13px; color: #57606a; }
+  .step-num { background: #3b82d4; color: #fff; font-size: 11px; font-weight: 700; min-width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-top: 1px; }
+  pre { background: #1f2328; color: #a5f3fc; padding: 14px 16px; border-radius: 8px; font-size: 13px; overflow-x: auto; line-height: 1.6; margin: 6px 0 12px; }
+  .out-label { font-size: 11px; font-weight: 700; color: #57606a; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 4px; margin-top: 14px; }
+  .cmd-box { background: #1f2328; color: #86efac; padding: 12px 16px; border-radius: 8px; font-family: monospace; font-size: 13px; line-height: 1.8; margin: 6px 0 12px; white-space: pre; overflow-x: auto; }
+  .btn-copy { padding: 8px 18px; background: #f7f8fa; border: 1px solid #e5e7eb; border-radius: 7px; font-size: 13px; font-weight: 600; cursor: pointer; color: #1f2328; transition: all 0.15s; }
+  .btn-copy:hover { background: #e5e7eb; }
+  .btn-copy.copied { background: #d1fae5; color: #16a34a; border-color: #bbf7d0; }
+
+  /* ── View All ── */
+  .view-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .view-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 10px; padding: 16px; }
+  .view-card .vc-code { font-size: 11px; font-weight: 700; font-family: monospace; background: #1f2328; color: #fff; padding: 2px 8px; border-radius: 5px; display: inline-block; margin-bottom: 6px; }
+  .view-card .vc-name { font-size: 14px; font-weight: 700; margin-bottom: 8px; }
+  .view-card .vc-row { font-size: 12px; color: #57606a; margin-bottom: 4px; }
+  .view-card .vc-row span { color: #1f2328; }
+
+  mark { background: #fef08a; border-radius: 2px; padding: 0 1px; }
+  footer { text-align: center; font-size: 12px; color: #57606a; border-top: 1px solid #e5e7eb; padding: 16px; background: #fff; margin-top: 8px; }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <h1>REXX Knowledge Base</h1>
+  <p>Search, browse and add REXX errors — auto-generates JSON for Git</p>
+  <div class="header-badges">
+    <span class="badge badge-blue">8 Errors Documented</span>
+    <span class="badge badge-green">GitHub Connected</span>
+    <span class="badge badge-gray">REXX001 – REXX008</span>
+  </div>
+</div>
+
+<!-- Stats -->
+<div class="stats">
+  <div class="stat"><div class="stat-number">8</div><div class="stat-label">Total Errors</div></div>
+  <div class="stat"><div class="stat-number">JSON</div><div class="stat-label">Data Format</div></div>
+  <div class="stat"><div class="stat-number">Python</div><div class="stat-label">Search Program</div></div>
+  <div class="stat"><div class="stat-number">Git</div><div class="stat-label">Version Control</div></div>
+</div>
+
+<!-- Tabs -->
+<div class="tabs">
+  <div class="tab active"   onclick="switchTab('search')">🔍 Search Errors</div>
+  <div class="tab"          onclick="switchTab('all')">📋 All Errors</div>
+  <div class="tab"          onclick="switchTab('add')">➕ Add New Error</div>
+</div>
+
+<!-- ── SEARCH PANEL ── -->
+<div class="panel active" id="panel-search">
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="searchInput" placeholder="Type error name, code (e.g. REXX001), cause or keyword..." oninput="renderSearch(this.value)" autofocus>
+  </div>
+  <div class="filter-row" id="filterRow"></div>
+  <div class="result-count" id="resultCount">Showing all 8 errors</div>
+  <div id="searchResults"></div>
+</div>
+
+<!-- ── ALL ERRORS PANEL ── -->
+<div class="panel" id="panel-all">
+  <div class="view-grid" id="allGrid"></div>
+</div>
+
+<!-- ── ADD PANEL ── -->
+<div class="panel" id="panel-add">
+  <div class="form-card">
+    <h2>➕ Add New REXX Error to Knowledge Base</h2>
+
+    <div class="form-grid">
+      <div class="form-row">
+        <label>Error Code *</label>
+        <input type="text" id="f-code" placeholder="e.g. REXX009" maxlength="10" oninput="clearErr('code')">
+        <div class="hint">Next available: <strong id="nextCode">REXX009</strong></div>
+        <div class="validation-error" id="err-code">Error code is required (e.g. REXX009)</div>
+      </div>
+      <div class="form-row">
+        <label>Error Name *</label>
+        <input type="text" id="f-name" placeholder="e.g. Undefined Label" oninput="clearErr('name')">
+        <div class="validation-error" id="err-name">Error name is required</div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <label>Cause *</label>
+      <textarea id="f-cause" placeholder="Describe what causes this REXX error..." oninput="clearErr('cause')"></textarea>
+      <div class="validation-error" id="err-cause">Cause is required</div>
+    </div>
+
+    <div class="form-row">
+      <label>Solution *</label>
+      <textarea id="f-solution" placeholder="Describe how to fix this error..." oninput="clearErr('solution')"></textarea>
+      <div class="validation-error" id="err-solution">Solution is required</div>
+    </div>
+
+    <button class="btn-primary" onclick="generate()">⚡ Generate JSON &amp; Git Commands</button>
+  </div>
+
+  <!-- Output -->
+  <div class="output-card" id="outputCard">
+    <h3>✅ Ready to save to Git!</h3>
+    <div class="output-steps">
+      <div class="step"><div class="step-num">1</div><div>Save a new file in your <code>errors/</code> folder using the filename below</div></div>
+      <div class="step"><div class="step-num">2</div><div>Paste the JSON content into that file</div></div>
+      <div class="step"><div class="step-num">3</div><div>Copy and run the Git commands in your terminal</div></div>
+    </div>
+
+    <div class="out-label">📄 Filename</div>
+    <pre id="outputFilename"></pre>
+
+    <div class="out-label">📋 JSON Content <button class="btn-copy" id="btnJson" onclick="copyText('outputJsonRaw','btnJson')">📋 Copy</button></div>
+    <pre id="outputJson"></pre>
+    <textarea id="outputJsonRaw" style="display:none"></textarea>
+
+    <div class="out-label">⚡ Git Commands (run in terminal) <button class="btn-copy" id="btnGit" onclick="copyText('outputGitRaw','btnGit')">📋 Copy</button></div>
+    <div class="cmd-box" id="outputGit"></div>
+    <textarea id="outputGitRaw" style="display:none"></textarea>
+  </div>
+</div>
+
+<footer>Made with IBM Bob &nbsp;·&nbsp; REXX Knowledge Base &nbsp;·&nbsp; <a href="https://github.com/jayasree2019/rexx-knowledge-base" style="color:#3b82d4;">github.com/jayasree2019/rexx-knowledge-base</a></footer>
+
+<script>
+const errors = [
+  { code:"REXX001", name:"Bad Arithmetic Conversion",  cause:"Character value used in arithmetic calculation",            solution:"Use DATATYPE(variable,'N') before arithmetic" },
+  { code:"REXX002", name:"Dataset Not Found",          cause:"Dataset is missing",                                        solution:"Check correct dataset name" },
+  { code:"REXX003", name:"Missing THEN",               cause:"IF statement without THEN",                                 solution:"Add THEN keyword" },
+  { code:"REXX004", name:"Invalid DO Loop",            cause:"DO loop missing END statement or incorrect syntax",         solution:"Ensure every DO loop has a matching END statement" },
+  { code:"REXX005", name:"Variable Not Initialized",   cause:"Variable used before being assigned a value",               solution:"Initialize the variable before using it in expressions" },
+  { code:"REXX006", name:"Invalid Function Call",      cause:"Function name is misspelled or function does not exist",    solution:"Check the function name and ensure it is a valid built-in or user-defined REXX function" },
+  { code:"REXX007", name:"Stack Overflow",             cause:"Excessive recursion or too many nested subroutine calls",   solution:"Reduce recursion depth or rewrite logic using iterative DO loops" },
+  { code:"REXX008", name:"Invalid Stem Variable",      cause:"Stem variable used with incorrect syntax or invalid index", solution:"Ensure stem variable is referenced as STEM.index with a valid numeric or string index" }
+];
+
+// ── Tabs ────────────────────────────────────────────────────────────────────
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',['search','all','add'][i]===name));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  if (name==='all') renderAll();
+}
+
+// ── Highlight ───────────────────────────────────────────────────────────────
+function hl(text, q) {
+  if (!q) return text;
+  return text.replace(new RegExp('('+q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi'),'<mark>$1</mark>');
+}
+
+// ── Search ──────────────────────────────────────────────────────────────────
+const keywords = ['arithmetic','dataset','then','loop','variable','function','stack','stem'];
+
+function buildFilters() {
+  const row = document.getElementById('filterRow');
+  let html = '<span class="filter-btn active" onclick="filterBy(this,\'\')">All</span>';
+  keywords.forEach(k => html += `<span class="filter-btn" onclick="filterBy(this,'${k}')">${k}</span>`);
+  row.innerHTML = html;
+}
+
+function filterBy(el, kw) {
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('searchInput').value = kw;
+  renderSearch(kw);
+}
+
+function renderSearch(q) {
+  const query = q.trim().toLowerCase();
+  let html = '', count = 0;
+  errors.forEach(e => {
+    const hay = (e.code+' '+e.name+' '+e.cause+' '+e.solution).toLowerCase();
+    if (!query || hay.includes(query)) {
+      count++;
+      html += `<div class="card" onclick="toggleCard(this)">
+        <div class="card-header">
+          <span class="error-code">${hl(e.code,q)}</span>
+          <span class="error-name">${hl(e.name,q)}</span>
+          <span class="toggle-icon">▼</span>
+        </div>
+        <div class="card-body">
+          <div class="cause-box"><div class="section-label">Cause</div><div class="text">${hl(e.cause,q)}</div></div>
+          <div class="solution-box"><div class="section-label">Solution</div><div class="text">${hl(e.solution,q)}</div></div>
+        </div></div>`;
+    }
+  });
+  if (!count) html = `<div class="no-results">🔎 No errors found for "<strong>${q}</strong>"</div>`;
+  document.getElementById('searchResults').innerHTML = html;
+  document.getElementById('resultCount').textContent = query ? `Showing ${count} of ${errors.length} errors` : `Showing all ${errors.length} errors`;
+}
+
+function toggleCard(card) { card.classList.toggle('collapsed'); }
+
+// ── All Errors ───────────────────────────────────────────────────────────────
+function renderAll() {
+  document.getElementById('allGrid').innerHTML = errors.map(e=>`
+    <div class="view-card">
+      <div class="vc-code">${e.code}</div>
+      <div class="vc-name">${e.name}</div>
+      <div class="vc-row">Cause: <span>${e.cause}</span></div>
+      <div class="vc-row">Solution: <span>${e.solution}</span></div>
+    </div>`).join('');
+}
+
+// ── Add & Generate ───────────────────────────────────────────────────────────
+document.getElementById('nextCode').textContent = 'REXX00' + (errors.length + 1);
+
+function clearErr(field) {
+  document.getElementById('f-'+field).classList.remove('invalid');
+  document.getElementById('err-'+field).style.display = 'none';
+}
+
+function validate(id) {
+  const v = document.getElementById('f-'+id).value.trim();
+  const ok = v.length > 0;
+  document.getElementById('f-'+id).classList.toggle('invalid', !ok);
+  document.getElementById('err-'+id).style.display = ok ? 'none' : 'block';
+  return ok;
+}
+
+function generate() {
+  if (!validate('code')||!validate('name')||!validate('cause')||!validate('solution')) return;
+  const code     = document.getElementById('f-code').value.trim().toUpperCase();
+  const name     = document.getElementById('f-name').value.trim();
+  const cause    = document.getElementById('f-cause').value.trim();
+  const solution = document.getElementById('f-solution').value.trim();
+  const filename = name.toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_|_$/g,'') + '.json';
+  const json     = JSON.stringify({error_code:code, error_name:name, cause:cause, solution:solution}, null, 2);
+  const git      = `git add "errors/${filename}"\ngit commit -m "Add ${name} (${code})"\ngit push origin main`;
+
+  document.getElementById('outputFilename').textContent = 'errors/' + filename;
+  document.getElementById('outputJson').textContent     = json;
+  document.getElementById('outputJsonRaw').value        = json;
+  document.getElementById('outputGit').textContent      = git;
+  document.getElementById('outputGitRaw').value         = git;
+  document.getElementById('outputCard').style.display   = 'block';
+  document.getElementById('btnJson').textContent        = '📋 Copy';
+  document.getElementById('btnGit').textContent         = '📋 Copy';
+  document.getElementById('outputCard').scrollIntoView({behavior:'smooth'});
+}
+
+function copyText(srcId, btnId) {
+  const text = document.getElementById(srcId).value;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn = document.getElementById(btnId);
+    btn.textContent = '✅ Copied!'; btn.classList.add('copied');
+    setTimeout(()=>{ btn.textContent='📋 Copy'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+// ── Init ─────────────────────────────────────────────────────────────────────
+buildFilters();
+renderSearch('');
+</script>
+</body>
+</html>
