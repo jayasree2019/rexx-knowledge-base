@@ -44,6 +44,283 @@
     "Operation": "sro:Operation",
     "State": "sro:State"
   },
+  "constraints": [
+    {
+      "id": "Requirement_invariant_1",
+      "name": "Requirement_invariant_1",
+      "type": "check",
+      "appliedTo": "sro:Requirement",
+      "appliedToUUID": "84bd6579-6b58-400b-a0fc-dcbc3b9a5a27",
+      "severity": "error",
+      "enabled": true,
+      "rule": "requirementCode must be unique",
+      "created": "2026-07-19"
+    },
+    {
+      "id": "Requirement_invariant_2",
+      "name": "Requirement_invariant_2",
+      "type": "check",
+      "appliedTo": "sro:Requirement",
+      "appliedToUUID": "84bd6579-6b58-400b-a0fc-dcbc3b9a5a27",
+      "severity": "error",
+      "enabled": true,
+      "rule": "priority must be one of MoSCoW values: MUST | SHOULD | COULD | WONT",
+      "created": "2026-07-19"
+    },
+    {
+      "id": "Requirement_invariant_3",
+      "name": "Requirement_invariant_3",
+      "type": "check",
+      "appliedTo": "sro:Requirement",
+      "appliedToUUID": "84bd6579-6b58-400b-a0fc-dcbc3b9a5a27",
+      "severity": "error",
+      "enabled": true,
+      "rule": "A requirement must have at least one stakeholder source",
+      "created": "2026-07-19"
+    },
+    {
+      "id": "FunctionalRequirement_invariant_1",
+      "name": "FunctionalRequirement_invariant_1",
+      "type": "check",
+      "appliedTo": "sro:FunctionalRequirement",
+      "appliedToUUID": "767c5232-348d-44b5-b878-c7262c21243b",
+      "severity": "error",
+      "enabled": true,
+      "rule": "Must define clear acceptance criteria",
+      "created": "2026-07-19"
+    },
+    {
+      "id": "FunctionalRequirement_invariant_2",
+      "name": "FunctionalRequirement_invariant_2",
+      "type": "check",
+      "appliedTo": "sro:FunctionalRequirement",
+      "appliedToUUID": "767c5232-348d-44b5-b878-c7262c21243b",
+      "severity": "error",
+      "enabled": true,
+      "rule": "Must specify expected system behavior",
+      "created": "2026-07-19"
+    },
+    {
+      "id": "NonFunctionalRequirement_invariant_1",
+      "name": "NonFunctionalRequirement_invariant_1",
+      "type": "check",
+      "appliedTo": "sro:NonFunctionalRequirement",
+      "appliedToUUID": "adc01f6c-4da1-4df6-b5da-97396a70318f",
+      "severity": "error",
+      "enabled": true,
+      "rule": "Must specify measurable quality criteria",
+      "created": "2026-07-19"
+    },
+    {
+      "id": "NonFunctionalRequirement_invariant_2",
+      "name": "NonFunctionalRequirement_invariant_2",
+      "type": "check",
+      "appliedTo": "sro:NonFunctionalRequirement",
+      "appliedToUUID": "adc01f6c-4da1-4df6-b5da-97396a70318f",
+      "severity": "error",
+      "enabled": true,
+      "rule": "qualityAttribute must be one of: PERFORMANCE | SECURITY | USABILITY | RELIABILITY | MAINTAINABILITY",
+      "created": "2026-07-19"
+    },
+    {
+      "id": "SecurityRequirement_invariant_1",
+      "name": "SecurityRequirement_invariant_1",
+      "type": "check",
+      "appliedTo": "sro:SecurityRequirement",
+      "appliedToUUID": "23f3c128-69e1-4d8b-a3fc-ccb6fad6fd94",
+      "severity": "error",
+      "enabled": true,
+      "rule": "Must define a security level: LOW | MEDIUM | HIGH | CRITICAL",
+      "created": "2026-07-19"
+    },
+    {
+      "id": "SecurityRequirement_invariant_2",
+      "name": "SecurityRequirement_invariant_2",
+      "type": "check",
+      "appliedTo": "sro:SecurityRequirement",
+      "appliedToUUID": "23f3c128-69e1-4d8b-a3fc-ccb6fad6fd94",
+      "severity": "error",
+      "enabled": true,
+      "rule": "Must specify mitigation strategy for HIGH and CRITICAL security levels",
+      "created": "2026-07-19"
+    },
+    {
+      "id": "SecurityRequirement_invariant_3",
+      "name": "SecurityRequirement_invariant_3",
+      "type": "check",
+      "appliedTo": "sro:SecurityRequirement",
+      "appliedToUUID": "23f3c128-69e1-4d8b-a3fc-ccb6fad6fd94",
+      "severity": "error",
+      "enabled": true,
+      "rule": "Must be verified by a security-type TestCase",
+      "created": "2026-07-19"
+    },
+    {
+      "id": "PerformanceRequirement_invariant_1",
+      "name": "PerformanceRequirement_invariant_1",
+      "type": "check",
+      "appliedTo": "sro:PerformanceRequirement",
+      "appliedToUUID": "bcabaf7e-885d-42cf-bf8a-3511937ae320",
+      "severity": "error",
+      "enabled": true,
+      "rule": "Must specify a measurable metric and threshold",
+      "created": "2026-07-19"
+    },
+    {
+      "id": "PerformanceRequirement_invariant_2",
+      "name": "PerformanceRequirement_invariant_2",
+      "type": "check",
+      "appliedTo": "sro:PerformanceRequirement",
+      "appliedToUUID": "bcabaf7e-885d-42cf-bf8a-3511937ae320",
+      "severity": "error",
+      "enabled": true,
+      "rule": "unit must match the selected metric: ms|s for RESPONSE_TIME, MB|GB for MEMORY_USAGE, % for CPU_USAGE, req/s for THROUGHPUT",
+      "created": "2026-07-19"
+    },
+    {
+      "id": "PerformanceRequirement_invariant_3",
+      "name": "PerformanceRequirement_invariant_3",
+      "type": "check",
+      "appliedTo": "sro:PerformanceRequirement",
+      "appliedToUUID": "bcabaf7e-885d-42cf-bf8a-3511937ae320",
+      "severity": "error",
+      "enabled": true,
+      "rule": "Must be verified by a performance-type TestCase",
+      "created": "2026-07-19"
+    },
+    {
+      "id": "Stakeholder_invariant_1",
+      "name": "Stakeholder_invariant_1",
+      "type": "check",
+      "appliedTo": "sro:Stakeholder",
+      "appliedToUUID": "f0429fc2-1229-420f-9b74-bdbdd97718eb",
+      "severity": "error",
+      "enabled": true,
+      "rule": "stakeholderName must be unique",
+      "created": "2026-07-19"
+    },
+    {
+      "id": "Stakeholder_invariant_2",
+      "name": "Stakeholder_invariant_2",
+      "type": "check",
+      "appliedTo": "sro:Stakeholder",
+      "appliedToUUID": "f0429fc2-1229-420f-9b74-bdbdd97718eb",
+      "severity": "error",
+      "enabled": true,
+      "rule": "role must be defined and one of: DEVELOPER | ADMIN | TESTER | MANAGER | END_USER",
+      "created": "2026-07-19"
+    },
+    {
+      "id": "Goal_invariant_1",
+      "name": "Goal_invariant_1",
+      "type": "check",
+      "appliedTo": "sro:Goal",
+      "appliedToUUID": "a8a1c0f5-5cde-47a0-bcea-ff9b7f5b046e",
+      "severity": "error",
+      "enabled": true,
+      "rule": "goalName must be unique",
+      "created": "2026-07-19"
+    },
+    {
+      "id": "Goal_invariant_2",
+      "name": "Goal_invariant_2",
+      "type": "check",
+      "appliedTo": "sro:Goal",
+      "appliedToUUID": "a8a1c0f5-5cde-47a0-bcea-ff9b7f5b046e",
+      "severity": "error",
+      "enabled": true,
+      "rule": "A goal must be refined by at least one requirement",
+      "created": "2026-07-19"
+    },
+    {
+      "id": "UseCase_invariant_1",
+      "name": "UseCase_invariant_1",
+      "type": "check",
+      "appliedTo": "sro:UseCase",
+      "appliedToUUID": "e3b2a1d4-7f6e-4c5b-a9d8-1234567890ab",
+      "severity": "error",
+      "enabled": true,
+      "rule": "useCaseName must be unique",
+      "created": "2026-07-19"
+    },
+    {
+      "id": "UseCase_invariant_2",
+      "name": "UseCase_invariant_2",
+      "type": "check",
+      "appliedTo": "sro:UseCase",
+      "appliedToUUID": "e3b2a1d4-7f6e-4c5b-a9d8-1234567890ab",
+      "severity": "error",
+      "enabled": true,
+      "rule": "actor must map to an existing Stakeholder role",
+      "created": "2026-07-19"
+    },
+    {
+      "id": "UseCase_invariant_3",
+      "name": "UseCase_invariant_3",
+      "type": "check",
+      "appliedTo": "sro:UseCase",
+      "appliedToUUID": "e3b2a1d4-7f6e-4c5b-a9d8-1234567890ab",
+      "severity": "error",
+      "enabled": true,
+      "rule": "Must have at least one step in mainFlow",
+      "created": "2026-07-19"
+    },
+    {
+      "id": "UseCase_invariant_4",
+      "name": "UseCase_invariant_4",
+      "type": "check",
+      "appliedTo": "sro:UseCase",
+      "appliedToUUID": "e3b2a1d4-7f6e-4c5b-a9d8-1234567890ab",
+      "severity": "error",
+      "enabled": true,
+      "rule": "Must relate to at least one Requirement",
+      "created": "2026-07-19"
+    },
+    {
+      "id": "SystemComponent_invariant_1",
+      "name": "SystemComponent_invariant_1",
+      "type": "check",
+      "appliedTo": "sro:SystemComponent",
+      "appliedToUUID": "507bc8ed-06af-4291-86b8-0c965949006b",
+      "severity": "error",
+      "enabled": true,
+      "rule": "componentName must be unique",
+      "created": "2026-07-19"
+    },
+    {
+      "id": "TestCase_invariant_1",
+      "name": "TestCase_invariant_1",
+      "type": "check",
+      "appliedTo": "sro:TestCase",
+      "appliedToUUID": "044af5aa-d2bd-475e-a61a-28198a9540dc",
+      "severity": "error",
+      "enabled": true,
+      "rule": "testCaseCode must be unique",
+      "created": "2026-07-19"
+    },
+    {
+      "id": "TestCase_invariant_2",
+      "name": "TestCase_invariant_2",
+      "type": "check",
+      "appliedTo": "sro:TestCase",
+      "appliedToUUID": "044af5aa-d2bd-475e-a61a-28198a9540dc",
+      "severity": "error",
+      "enabled": true,
+      "rule": "Must verify at least one requirement",
+      "created": "2026-07-19"
+    },
+    {
+      "id": "TestCase_invariant_3",
+      "name": "TestCase_invariant_3",
+      "type": "check",
+      "appliedTo": "sro:TestCase",
+      "appliedToUUID": "044af5aa-d2bd-475e-a61a-28198a9540dc",
+      "severity": "error",
+      "enabled": true,
+      "rule": "expectedOutput must be defined",
+      "created": "2026-07-19"
+    }
+  ],
   "@graph": [
     {
       "id": "sro:Requirement",
