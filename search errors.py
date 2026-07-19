@@ -5,6 +5,8 @@ error_folder = "errors"
 
 search = input("Enter error name: ")
 
+found = False
+
 for file in os.listdir(error_folder):
 
     if file.endswith(".json"):
@@ -22,3 +24,7 @@ for file in os.listdir(error_folder):
                 print("Name:", data["error_name"])
                 print("Cause:", data["cause"])
                 print("Solution:", data["solution"])
+                found = True
+
+if not found:
+    print("\nNo error found for:", search)
