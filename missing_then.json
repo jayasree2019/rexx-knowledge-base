@@ -1,0 +1,6 @@
+ {
+  "error_code": "REXX003",
+  "error_name": "Missing THEN",
+  "cause": "IF statement without THEN",
+  "solution": "Add THEN keyword"
+}
