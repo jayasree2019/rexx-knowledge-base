@@ -117,6 +117,27 @@
   /* Edit mode highlight */
   .editing { border-color: #3b82d4 !important; }
 
+  /* Related IBM Docs */
+  .related-box { background: #fff; border: 1px solid #bfdbfe; border-radius: 10px; overflow: hidden; margin-bottom: 12px; }
+  .related-header { display: flex; align-items: flex-start; gap: 14px; padding: 16px 18px; background: #eff6ff; border-bottom: 1px solid #bfdbfe; }
+  .related-icon { font-size: 24px; margin-top: 2px; }
+  .related-title { font-size: 15px; font-weight: 700; color: #1e3a5f; margin-bottom: 4px; }
+  .related-sub { font-size: 13px; color: #3b82d4; }
+  .related-sub a { color: #2563eb; font-weight: 600; }
+  .related-list { padding: 10px 14px; }
+  .related-item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border: 1px solid #e5e7eb; border-radius: 8px; margin-bottom: 8px; text-decoration: none; color: inherit; transition: all 0.15s; background: #fff; }
+  .related-item:hover { background: #f0f7ff; border-color: #93c5fd; }
+  .related-item-icon { font-size: 18px; flex-shrink: 0; }
+  .related-item-body { flex: 1; min-width: 0; }
+  .related-item-title { font-size: 14px; font-weight: 600; color: #1f2328; margin-bottom: 2px; }
+  .related-item-url { font-size: 11px; color: #57606a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .related-arrow { color: #3b82d4; font-size: 16px; font-weight: 700; flex-shrink: 0; }
+  .related-footer { display: flex; align-items: center; gap: 16px; padding: 12px 18px; background: #f7f8fa; border-top: 1px solid #e5e7eb; flex-wrap: wrap; }
+  .btn-ibmdocs { display: inline-block; padding: 8px 16px; background: #1f2328; color: #fff; border-radius: 7px; font-size: 13px; font-weight: 600; text-decoration: none; transition: background 0.15s; white-space: nowrap; }
+  .btn-ibmdocs:hover { background: #3b82d4; }
+  .link-like { color: #3b82d4; font-size: 13px; cursor: pointer; font-weight: 600; }
+  .link-like:hover { text-decoration: underline; }
+
   mark { background: #fef08a; border-radius: 2px; padding: 0 1px; }
   footer { text-align: center; font-size: 12px; color: #57606a; border-top: 1px solid #e5e7eb; padding: 16px; background: #fff; margin-top: 8px; }
 </style>
@@ -318,6 +339,41 @@ function filterBy(el, kw) {
   renderSearch(kw);
 }
 
+// ── Related IBM Docs ──────────────────────────────────────────────────────────
+const ibmDocs = [
+  { topic: "REXX Language Overview",        url: "https://www.ibm.com/docs/en/zos/2.1.0?topic=guide-learning-rexx-language",               keywords: ["rexx","language","overview","introduction","learn"] },
+  { topic: "REXX Instructions",             url: "https://www.ibm.com/docs/en/zos/2.1.0?topic=rexx-instructions",                          keywords: ["instruction","do","if","then","else","end","say","exit","call","return","when"] },
+  { topic: "DO Loops in REXX",              url: "https://www.ibm.com/docs/en/zos/2.1.0?topic=instructions-do",                            keywords: ["do","loop","end","iterate","leave","repeat","counter","for"] },
+  { topic: "IF / THEN / ELSE in REXX",      url: "https://www.ibm.com/docs/en/zos/2.1.0?topic=instructions-if",                            keywords: ["if","then","else","when","condition","missing","select"] },
+  { topic: "REXX Built-in Functions",       url: "https://www.ibm.com/docs/en/zos/2.1.0?topic=rexx-built-in-functions",                    keywords: ["function","builtin","built-in","datatype","length","substr","pos","left","right","call"] },
+  { topic: "REXX Arithmetic",               url: "https://www.ibm.com/docs/en/zos/2.1.0?topic=rexx-arithmetic",                            keywords: ["arithmetic","numeric","conversion","calculate","number","math","integer","decimal"] },
+  { topic: "REXX Variables & Expressions",  url: "https://www.ibm.com/docs/en/zos/2.1.0?topic=rexx-variables",                             keywords: ["variable","assign","initialize","expression","value","uninitialized","symbol"] },
+  { topic: "Compound & Stem Variables",     url: "https://www.ibm.com/docs/en/zos/2.1.0?topic=rexx-compound-variables",                    keywords: ["stem","compound","array","index","subscript","dot","collection"] },
+  { topic: "REXX Subroutines & Functions",  url: "https://www.ibm.com/docs/en/zos/2.1.0?topic=rexx-subroutines-functions",                 keywords: ["subroutine","function","call","return","procedure","recursion","stack","overflow","nested"] },
+  { topic: "REXX Error Handling",           url: "https://www.ibm.com/docs/en/zos/2.1.0?topic=rexx-error-handling",                        keywords: ["error","condition","signal","syntax","novalue","failure","halt","exception","trap"] },
+  { topic: "REXX & z/OS Datasets",          url: "https://www.ibm.com/docs/en/zos/2.1.0?topic=rexx-using-zos-data-sets",                   keywords: ["dataset","file","dsn","not found","missing","allocate","open","read","write"] },
+  { topic: "REXX Debugging & Tracing",      url: "https://www.ibm.com/docs/en/zos/2.1.0?topic=rexx-debugging",                             keywords: ["debug","trace","error","issue","problem","wrong","diagnose","test"] },
+  { topic: "REXX String Operations",        url: "https://www.ibm.com/docs/en/zos/2.1.0?topic=rexx-string-operations",                     keywords: ["string","concat","parse","word","upper","lower","strip","char","text"] },
+  { topic: "REXX Input & Output",           url: "https://www.ibm.com/docs/en/zos/2.1.0?topic=rexx-input-output",                          keywords: ["input","output","say","pull","linein","lineout","read","write","display"] }
+];
+
+function findRelatedDocs(query) {
+  const q = query.toLowerCase();
+  const words = q.split(/\s+/).filter(w => w.length > 2);
+  const scored = ibmDocs.map(doc => {
+    let score = 0;
+    words.forEach(word => {
+      doc.keywords.forEach(kw => {
+        if (kw.includes(word) || word.includes(kw)) score += 2;
+      });
+      if (doc.topic.toLowerCase().includes(word)) score += 3;
+    });
+    if (doc.keywords.some(kw => q.includes(kw))) score += 4;
+    return { ...doc, score };
+  }).filter(d => d.score > 0).sort((a, b) => b.score - a.score).slice(0, 5);
+  return scored;
+}
+
 function renderSearch(q) {
   const query = q.trim().toLowerCase();
   let html = '', count = 0;
@@ -342,9 +398,55 @@ function renderSearch(q) {
         </div></div>`;
     }
   });
-  if (!count) html = `<div class="no-results">🔎 No errors found for "<strong>${q}</strong>"</div>`;
+
+  if (!count && query) {
+    const related = findRelatedDocs(query);
+    if (related.length > 0) {
+      html = `<div class="related-box">
+        <div class="related-header">
+          <span class="related-icon">📚</span>
+          <div>
+            <div class="related-title">Not found in knowledge base — searching IBM Documentation</div>
+            <div class="related-sub">Found <strong>${related.length}</strong> related topic${related.length > 1 ? 's' : ''} in <a href="https://www.ibm.com/docs/en/zos/2.1.0?topic=guide-learning-rexx-language" target="_blank">IBM z/OS REXX Guide</a></div>
+          </div>
+        </div>
+        <div class="related-list">
+          ${related.map(doc => `
+            <a href="${doc.url}" target="_blank" class="related-item">
+              <span class="related-item-icon">📄</span>
+              <div class="related-item-body">
+                <div class="related-item-title">${doc.topic}</div>
+                <div class="related-item-url">${doc.url.replace('https://','')}</div>
+              </div>
+              <span class="related-arrow">→</span>
+            </a>`).join('')}
+        </div>
+        <div class="related-footer">
+          <a href="https://www.ibm.com/docs/en/zos/2.1.0?topic=guide-learning-rexx-language" target="_blank" class="btn-ibmdocs">Open Full IBM REXX Documentation ↗</a>
+          <span class="link-like" onclick="switchTab('add')">➕ Add this error to knowledge base</span>
+        </div>
+      </div>`;
+    } else {
+      html = `<div class="related-box">
+        <div class="related-header">
+          <span class="related-icon">🔎</span>
+          <div>
+            <div class="related-title">No results found for "<strong>${q}</strong>"</div>
+            <div class="related-sub">Try the full IBM REXX documentation for more information</div>
+          </div>
+        </div>
+        <div class="related-footer">
+          <a href="https://www.ibm.com/docs/en/zos/2.1.0?topic=guide-learning-rexx-language" target="_blank" class="btn-ibmdocs">Open IBM z/OS REXX Documentation ↗</a>
+          <span class="link-like" onclick="switchTab('add')">➕ Add this error to knowledge base</span>
+        </div>
+      </div>`;
+    }
+  }
+
   document.getElementById('searchResults').innerHTML = html;
-  document.getElementById('resultCount').textContent = query ? `Showing ${count} of ${errors.length} errors` : `Showing all ${errors.length} errors`;
+  document.getElementById('resultCount').textContent = query
+    ? (count > 0 ? `Showing ${count} of ${errors.length} errors` : `No match in knowledge base — showing IBM docs suggestions`)
+    : `Showing all ${errors.length} errors`;
 }
 
 function toggleCard(id) { document.getElementById(id).classList.toggle('collapsed'); }
