@@ -1,0 +1,6 @@
+{
+  "error_code": "REXX002",
+  "error_name": "Dataset Not Found",
+  "cause": "Dataset is missing",
+  "solution": "Check correct dataset name"
+}

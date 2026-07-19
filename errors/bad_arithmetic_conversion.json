@@ -1,0 +1,6 @@
+{
+  "error_code": "REXX001",
+  "error_name": "Bad Arithmetic Conversion",
+  "cause": "Character value used in arithmetic calculation",
+  "solution": "Use DATATYPE(variable,'N') before arithmetic"
+}
